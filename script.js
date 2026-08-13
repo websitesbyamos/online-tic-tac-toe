@@ -24,8 +24,6 @@ let myPlayer = null;
 let gameData = null;
 let realtimeChannel = null;
 
-const playerId = getPlayerId();
-
 
 // ==========================================
 // PLAYER ID
@@ -34,7 +32,9 @@ const playerId = getPlayerId();
 function getPlayerId() {
 
     let id =
-        localStorage.getItem("tic_player_id");
+        localStorage.getItem(
+            "tic_player_id"
+        );
 
     if (!id) {
 
@@ -52,9 +52,72 @@ function getPlayerId() {
     return id;
 }
 
+const playerId = getPlayerId();
+
 
 // ==========================================
-// ROOM CODE
+// ELEMENTS
+// ==========================================
+
+const playerNameInput =
+    document.getElementById(
+        "playerName"
+    );
+
+const roomCodeInput =
+    document.getElementById(
+        "roomCode"
+    );
+
+const statusText =
+    document.getElementById(
+        "status"
+    );
+
+const playersText =
+    document.getElementById(
+        "players"
+    );
+
+const playerXName =
+    document.getElementById(
+        "playerXName"
+    );
+
+const playerOName =
+    document.getElementById(
+        "playerOName"
+    );
+
+const scoreX =
+    document.getElementById(
+        "scoreX"
+    );
+
+const scoreO =
+    document.getElementById(
+        "scoreO"
+    );
+
+const cells =
+    document.querySelectorAll(
+        ".cell"
+    );
+
+
+// ==========================================
+// STATUS
+// ==========================================
+
+function setStatus(message) {
+
+    statusText.textContent =
+        message;
+}
+
+
+// ==========================================
+// GENERATE ROOM CODE
 // ==========================================
 
 function generateRoomCode() {
@@ -64,7 +127,11 @@ function generateRoomCode() {
 
     let code = "";
 
-    for (let i = 0; i < 6; i++) {
+    for (
+        let i = 0;
+        i < 6;
+        i++
+    ) {
 
         code +=
             characters.charAt(
@@ -80,10 +147,42 @@ function generateRoomCode() {
 
 
 // ==========================================
+// GET PLAYER NAME
+// ==========================================
+
+function getPlayerName() {
+
+    const name =
+        playerNameInput
+            .value
+            .trim();
+
+    if (!name) {
+
+        setStatus(
+            "Please enter your name first."
+        );
+
+        return null;
+    }
+
+    return name.substring(
+        0,
+        20
+    );
+}
+
+
+// ==========================================
 // CREATE ROOM
 // ==========================================
 
 async function createRoom() {
+
+    const name =
+        getPlayerName();
+
+    if (!name) return;
 
     const roomCode =
         generateRoomCode();
@@ -99,15 +198,41 @@ async function createRoom() {
         await supabaseClient
             .from("games")
             .insert({
-                room_code: roomCode,
-                board: emptyBoard,
-                current_turn: "X",
-                winner: "",
-                player_x: playerId,
-                player_o: null
+
+                room_code:
+                    roomCode,
+
+                board:
+                    emptyBoard,
+
+                current_turn:
+                    "X",
+
+                winner:
+                    "",
+
+                player_x:
+                    playerId,
+
+                player_o:
+                    null,
+
+                player_x_name:
+                    name,
+
+                player_o_name:
+                    "Waiting...",
+
+                score_x:
+                    0,
+
+                score_o:
+                    0
+
             })
             .select()
             .single();
+
 
     if (error) {
 
@@ -120,22 +245,33 @@ async function createRoom() {
         return;
     }
 
-    currentRoom = roomCode;
-    myPlayer = "X";
-    gameData = data;
 
-    document.getElementById(
-        "roomCode"
-    ).value = roomCode;
+    currentRoom =
+        roomCode;
+
+    myPlayer =
+        "X";
+
+    gameData =
+        data;
+
+
+    roomCodeInput.value =
+        roomCode;
+
+
+    playerNameInput.disabled =
+        true;
+
 
     setStatus(
         "Room created! Share the code with Player 2."
     );
 
-    document.getElementById(
-        "players"
-    ).textContent =
-        "You are Player X";
+
+    updatePlayers();
+
+    updateScore();
 
     subscribeToGame();
 
@@ -149,12 +285,18 @@ async function createRoom() {
 
 async function joinRoom() {
 
+    const name =
+        getPlayerName();
+
+    if (!name) return;
+
+
     const roomCode =
-        document
-            .getElementById("roomCode")
+        roomCodeInput
             .value
             .trim()
             .toUpperCase();
+
 
     if (!roomCode) {
 
@@ -165,23 +307,29 @@ async function joinRoom() {
         return;
     }
 
+
     const { data, error } =
         await supabaseClient
             .from("games")
             .select("*")
-            .eq("room_code", roomCode)
+            .eq(
+                "room_code",
+                roomCode
+            )
             .single();
 
+
     if (error || !data) {
+
+        console.error(error);
 
         setStatus(
             "Room not found."
         );
 
-        console.error(error);
-
         return;
     }
+
 
     if (data.player_o) {
 
@@ -192,19 +340,32 @@ async function joinRoom() {
         return;
     }
 
+
     const { data: updatedGame, error: updateError } =
         await supabaseClient
             .from("games")
             .update({
-                player_o: playerId
+
+                player_o:
+                    playerId,
+
+                player_o_name:
+                    name
+
             })
-            .eq("room_code", roomCode)
+            .eq(
+                "room_code",
+                roomCode
+            )
             .select()
             .single();
 
+
     if (updateError) {
 
-        console.error(updateError);
+        console.error(
+            updateError
+        );
 
         setStatus(
             "Could not join room."
@@ -213,18 +374,29 @@ async function joinRoom() {
         return;
     }
 
-    currentRoom = roomCode;
-    myPlayer = "O";
-    gameData = updatedGame;
+
+    currentRoom =
+        roomCode;
+
+    myPlayer =
+        "O";
+
+    gameData =
+        updatedGame;
+
+
+    playerNameInput.disabled =
+        true;
+
 
     setStatus(
         "You joined the room!"
     );
 
-    document.getElementById(
-        "players"
-    ).textContent =
-        "You are Player O";
+
+    updatePlayers();
+
+    updateScore();
 
     subscribeToGame();
 
@@ -233,7 +405,7 @@ async function joinRoom() {
 
 
 // ==========================================
-// REALTIME CONNECTION
+// REALTIME
 // ==========================================
 
 function subscribeToGame() {
@@ -246,52 +418,82 @@ function subscribeToGame() {
             );
     }
 
+
     realtimeChannel =
         supabaseClient
             .channel(
-                "game-" + currentRoom
+                "game-" +
+                currentRoom
             )
             .on(
+
                 "postgres_changes",
+
                 {
-                    event: "UPDATE",
-                    schema: "public",
-                    table: "games",
+
+                    event:
+                        "UPDATE",
+
+                    schema:
+                        "public",
+
+                    table:
+                        "games",
+
                     filter:
                         "room_code=eq." +
                         currentRoom
+
                 },
+
                 payload => {
 
                     gameData =
                         payload.new;
 
                     renderBoard();
+
+                    updatePlayers();
+
+                    updateScore();
+
                     updateStatus();
+
                 }
+
             )
             .subscribe();
 }
 
 
 // ==========================================
-// RENDER BOARD
+// BOARD
 // ==========================================
 
 function renderBoard() {
 
-    if (!gameData) return;
+    if (!gameData)
+        return;
+
 
     let board;
+
 
     try {
 
         board =
-            typeof gameData.board === "string"
-                ? JSON.parse(gameData.board)
+            typeof gameData.board ===
+            "string"
+
+                ? JSON.parse(
+                    gameData.board
+                )
+
                 : gameData.board;
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(
             "Board error:",
@@ -301,19 +503,20 @@ function renderBoard() {
         return;
     }
 
-    const cells =
-        document.querySelectorAll(
-            ".cell"
-        );
 
     cells.forEach(
-        (cell, index) => {
+        (
+            cell,
+            index
+        ) => {
 
             cell.textContent =
-                board[index] || "";
+                board[index] ||
+                "";
 
         }
     );
+
 
     updateStatus();
 }
@@ -334,6 +537,17 @@ async function makeMove(index) {
         return;
     }
 
+
+    if (!gameData.player_o) {
+
+        setStatus(
+            "Waiting for Player 2..."
+        );
+
+        return;
+    }
+
+
     if (
         gameData.current_turn !==
         myPlayer
@@ -346,61 +560,119 @@ async function makeMove(index) {
         return;
     }
 
+
     if (gameData.winner) {
 
         return;
     }
 
+
     let board =
-        typeof gameData.board === "string"
-            ? JSON.parse(gameData.board)
+        typeof gameData.board ===
+        "string"
+
+            ? JSON.parse(
+                gameData.board
+            )
+
             : gameData.board;
+
 
     if (board[index]) {
 
         return;
     }
 
+
     board[index] =
         myPlayer;
 
-    const result =
-        checkWinner(board);
 
-    let winner = "";
+    const result =
+        checkWinner(
+            board
+        );
+
+
+    let winner =
+        "";
+
 
     if (result) {
 
-        winner = result;
+        winner =
+            result;
 
-    } else if (
+    }
+
+    else if (
         board.every(
-            cell => cell !== ""
+            cell =>
+                cell !== ""
         )
     ) {
 
-        winner = "draw";
-
+        winner =
+            "draw";
     }
+
 
     const nextTurn =
         myPlayer === "X"
             ? "O"
             : "X";
 
+
+    let newScoreX =
+        Number(
+            gameData.score_x || 0
+        );
+
+
+    let newScoreO =
+        Number(
+            gameData.score_o || 0
+        );
+
+
+    if (winner === "X") {
+
+        newScoreX++;
+
+    }
+
+
+    if (winner === "O") {
+
+        newScoreO++;
+
+    }
+
+
     const { data, error } =
         await supabaseClient
             .from("games")
             .update({
+
                 board:
-                    JSON.stringify(board),
+                    JSON.stringify(
+                        board
+                    ),
 
                 current_turn:
                     winner
                         ? gameData.current_turn
                         : nextTurn,
 
-                winner: winner
+                winner:
+                    winner,
+
+                score_x:
+                    newScoreX,
+
+                score_o:
+                    newScoreO
+
             })
             .eq(
                 "room_code",
@@ -409,25 +681,35 @@ async function makeMove(index) {
             .select()
             .single();
 
+
     if (error) {
 
-        console.error(error);
+        console.error(
+            error
+        );
 
         setStatus(
-            "Move failed. Try again."
+            "Move failed."
         );
 
         return;
     }
 
-    gameData = data;
+
+    gameData =
+        data;
+
 
     renderBoard();
+
+    updateScore();
+
+    updateStatus();
 }
 
 
 // ==========================================
-// WINNER CHECK
+// WINNER
 // ==========================================
 
 function checkWinner(board) {
@@ -447,59 +729,154 @@ function checkWinner(board) {
 
     ];
 
+
     for (
-        const combo of combinations
+        const combo
+        of combinations
     ) {
 
-        const [a, b, c] =
-            combo;
+        const [
+            a,
+            b,
+            c
+        ] = combo;
+
 
         if (
+
             board[a] &&
-            board[a] === board[b] &&
-            board[a] === board[c]
+
+            board[a] ===
+            board[b] &&
+
+            board[a] ===
+            board[c]
+
         ) {
 
             return board[a];
 
         }
+
     }
+
 
     return "";
 }
 
 
 // ==========================================
-// STATUS
+// UPDATE SCORE
+// ==========================================
+
+function updateScore() {
+
+    if (!gameData)
+        return;
+
+
+    scoreX.textContent =
+        gameData.score_x || 0;
+
+
+    scoreO.textContent =
+        gameData.score_o || 0;
+}
+
+
+// ==========================================
+// UPDATE PLAYER NAMES
+// ==========================================
+
+function updatePlayers() {
+
+    if (!gameData)
+        return;
+
+
+    playerXName.textContent =
+        gameData.player_x_name ||
+        "Player X";
+
+
+    playerOName.textContent =
+        gameData.player_o_name ||
+        "Player O";
+
+
+    playersText.textContent =
+
+        gameData.player_o
+
+            ? "Players connected"
+
+            : "Waiting for Player 2...";
+}
+
+
+// ==========================================
+// GAME STATUS
 // ==========================================
 
 function updateStatus() {
 
-    if (!gameData) return;
+    if (!gameData)
+        return;
+
 
     if (
-        gameData.winner === "X" ||
-        gameData.winner === "O"
+        gameData.winner ===
+        "X"
     ) {
 
         if (
-            gameData.winner ===
-            myPlayer
+            myPlayer === "X"
         ) {
 
             setStatus(
-                "🎉 You won!"
+                "🎉 You won the round!"
             );
 
-        } else {
+        }
+
+        else {
 
             setStatus(
-                "😅 You lost!"
+                "😅 You lost the round."
             );
+
         }
 
         return;
     }
+
+
+    if (
+        gameData.winner ===
+        "O"
+    ) {
+
+        if (
+            myPlayer === "O"
+        ) {
+
+            setStatus(
+                "🎉 You won the round!"
+            );
+
+        }
+
+        else {
+
+            setStatus(
+                "😅 You lost the round."
+            );
+
+        }
+
+        return;
+    }
+
 
     if (
         gameData.winner ===
@@ -507,13 +884,16 @@ function updateStatus() {
     ) {
 
         setStatus(
-            "🤝 It's a draw!"
+            "🤝 Round draw!"
         );
 
         return;
     }
 
-    if (!gameData.player_o) {
+
+    if (
+        !gameData.player_o
+    ) {
 
         setStatus(
             "Waiting for Player 2..."
@@ -521,6 +901,7 @@ function updateStatus() {
 
         return;
     }
+
 
     if (
         gameData.current_turn ===
@@ -531,21 +912,88 @@ function updateStatus() {
             "Your turn!"
         );
 
-    } else {
+    }
+
+    else {
 
         setStatus(
             "Opponent's turn..."
         );
+
     }
 }
 
 
-function setStatus(message) {
+// ==========================================
+// NEXT ROUND
+// ==========================================
 
-    document.getElementById(
-        "status"
-    ).textContent =
-        message;
+async function resetGame() {
+
+    if (!currentRoom) {
+
+        setStatus(
+            "Create or join a room first."
+        );
+
+        return;
+    }
+
+
+    const emptyBoard =
+        JSON.stringify([
+            "", "", "",
+            "", "", "",
+            "", "", ""
+        ]);
+
+
+    const { data, error } =
+        await supabaseClient
+            .from("games")
+            .update({
+
+                board:
+                    emptyBoard,
+
+                current_turn:
+                    "X",
+
+                winner:
+                    ""
+
+            })
+            .eq(
+                "room_code",
+                currentRoom
+            )
+            .select()
+            .single();
+
+
+    if (error) {
+
+        console.error(
+            error
+        );
+
+        setStatus(
+            "Could not start next round."
+        );
+
+        return;
+    }
+
+
+    gameData =
+        data;
+
+
+    renderBoard();
+
+    updateScore();
+
+    updateStatus();
 }
 
 
@@ -553,101 +1001,26 @@ function setStatus(message) {
 // BOARD CLICK EVENTS
 // ==========================================
 
-document
-    .querySelectorAll(".cell")
-    .forEach(
-        cell => {
+cells.forEach(
+    cell => {
 
-            cell.addEventListener(
-                "click",
-                () => {
+        cell.addEventListener(
+            "click",
+            () => {
 
-                    const index =
-                        Number(
-                            cell.dataset.index
-                        );
+                const index =
+                    Number(
+                        cell.dataset.index
+                    );
 
-                    makeMove(index);
+                makeMove(index);
 
-                }
-            );
+            }
+        );
 
-        }
-    );
+    }
+);
 
 
 // ==========================================
 // BUTTON EVENTS
-// ==========================================
-
-document
-    .getElementById("createRoom")
-    .addEventListener(
-        "click",
-        createRoom
-    );
-
-
-document
-    .getElementById("joinRoom")
-    .addEventListener(
-        "click",
-        joinRoom
-    );
-
-
-console.log(
-    "🎮 Tic-Tac-Toe loaded!"
-);// ==========================================
-// RESET GAME
-// ==========================================
-
-async function resetGame() {
-
-    if (!currentRoom) {
-        setStatus("Create or join a room first.");
-        return;
-    }
-
-    const emptyBoard = JSON.stringify([
-        "", "", "",
-        "", "", "",
-        "", "", ""
-    ]);
-
-    const { data, error } =
-        await supabaseClient
-            .from("games")
-            .update({
-                board: emptyBoard,
-                current_turn: "X",
-                winner: ""
-            })
-            .eq("room_code", currentRoom)
-            .select()
-            .single();
-
-    if (error) {
-        console.error(error);
-        setStatus("Could not reset the game.");
-        return;
-    }
-
-    gameData = data;
-
-    renderBoard();
-
-    setStatus("New game started! Player X goes first.");
-}
-
-
-// ==========================================
-// RESET BUTTON
-// ==========================================
-
-document
-    .getElementById("resetGame")
-    .addEventListener(
-        "click",
-        resetGame
-    );
