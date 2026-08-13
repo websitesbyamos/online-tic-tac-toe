@@ -813,7 +813,9 @@ function updatePlayers() {
 
             ? "Players connected"
 
-            : "Waiting for Player 2...
+            : "Waiting for Player 2...";
+
+}
         // ==========================================
 // GAME STATUS
 // ==========================================
