@@ -1022,5 +1022,45 @@ cells.forEach(
 );
 
 
-// ==========================================
+// // ==========================================
 // BUTTON EVENTS
+// ==========================================
+
+const createRoomBtn =
+    document.getElementById("createRoomBtn");
+
+const joinRoomBtn =
+    document.getElementById("joinRoomBtn");
+
+const resetGameBtn =
+    document.getElementById("resetGameBtn");
+
+
+if (createRoomBtn) {
+
+    createRoomBtn.addEventListener(
+        "click",
+        createRoom
+    );
+
+}
+
+
+if (joinRoomBtn) {
+
+    joinRoomBtn.addEventListener(
+        "click",
+        joinRoom
+    );
+
+}
+
+
+if (resetGameBtn) {
+
+    resetGameBtn.addEventListener(
+        "click",
+        resetGame
+    );
+
+}
