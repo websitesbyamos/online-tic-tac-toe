@@ -227,10 +227,10 @@ async function createRoom() {
                     0,
 
                 score_o:
-    0,
+                    0,
 
-starting_player:
-    "X"
+                starting_player:
+                    "X"
 
             })
             .select()
@@ -813,11 +813,8 @@ function updatePlayers() {
 
             ? "Players connected"
 
-            : "Waiting for Player 2...";
-}
-
-
-// ==========================================
+            : "Waiting for Player 2...
+        // ==========================================
 // GAME STATUS
 // ==========================================
 
@@ -943,12 +940,38 @@ async function resetGame() {
     }
 
 
+    if (!gameData.player_o) {
+
+        setStatus(
+            "Waiting for Player 2..."
+        );
+
+        return;
+    }
+
+
     const emptyBoard =
         JSON.stringify([
             "", "", "",
             "", "", "",
             "", "", ""
         ]);
+
+
+    // Get the current starting player
+
+    const currentStartingPlayer =
+        gameData.starting_player === "O"
+            ? "O"
+            : "X";
+
+
+    // Switch the starting player
+
+    const nextStartingPlayer =
+        currentStartingPlayer === "X"
+            ? "O"
+            : "X";
 
 
     const { data, error } =
@@ -960,7 +983,10 @@ async function resetGame() {
                     emptyBoard,
 
                 current_turn:
-                    "X",
+                    nextStartingPlayer,
+
+                starting_player:
+                    nextStartingPlayer,
 
                 winner:
                     ""
@@ -1023,18 +1049,26 @@ cells.forEach(
 
     }
 );
+
+
 // ==========================================
 // BUTTON EVENTS
 // ==========================================
 
 const createRoomBtn =
-    document.getElementById("createRoom");
+    document.getElementById(
+        "createRoom"
+    );
 
 const joinRoomBtn =
-    document.getElementById("joinRoom");
+    document.getElementById(
+        "joinRoom"
+    );
 
 const resetGameBtn =
-    document.getElementById("resetGame");
+    document.getElementById(
+        "resetGame"
+    );
 
 
 createRoomBtn.addEventListener(
