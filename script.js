@@ -826,6 +826,64 @@ function updateStatus() {
         return;
 
 
+    // SESSION WINNER
+
+    if (
+        gameData.session_winner ===
+        "X"
+    ) {
+
+        if (
+            myPlayer === "X"
+        ) {
+
+            setStatus(
+                "🏆 YOU WON THE SESSION! 🎉"
+            );
+
+        }
+
+        else {
+
+            setStatus(
+                "🏆 Player X won the session!"
+            );
+
+        }
+
+        return;
+    }
+
+
+    if (
+        gameData.session_winner ===
+        "O"
+    ) {
+
+        if (
+            myPlayer === "O"
+        ) {
+
+            setStatus(
+                "🏆 YOU WON THE SESSION! 🎉"
+            );
+
+        }
+
+        else {
+
+            setStatus(
+                "🏆 Player O won the session!"
+            );
+
+        }
+
+        return;
+    }
+
+
+    // ROUND WINNER
+
     if (
         gameData.winner ===
         "X"
@@ -880,6 +938,8 @@ function updateStatus() {
     }
 
 
+    // DRAW
+
     if (
         gameData.winner ===
         "draw"
@@ -893,6 +953,8 @@ function updateStatus() {
     }
 
 
+    // WAITING FOR PLAYER
+
     if (
         !gameData.player_o
     ) {
@@ -904,6 +966,8 @@ function updateStatus() {
         return;
     }
 
+
+    // TURN
 
     if (
         gameData.current_turn ===
