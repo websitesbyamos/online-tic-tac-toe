@@ -1020,47 +1020,33 @@ cells.forEach(
 
     }
 );
-
-
-// // ==========================================
+// ==========================================
 // BUTTON EVENTS
 // ==========================================
 
 const createRoomBtn =
-    document.getElementById("createRoomBtn");
+    document.getElementById("createRoom");
 
 const joinRoomBtn =
-    document.getElementById("joinRoomBtn");
+    document.getElementById("joinRoom");
 
 const resetGameBtn =
-    document.getElementById("resetGameBtn");
+    document.getElementById("resetGame");
 
 
-if (createRoomBtn) {
-
-    createRoomBtn.addEventListener(
-        "click",
-        createRoom
-    );
-
-}
+createRoomBtn.addEventListener(
+    "click",
+    createRoom
+);
 
 
-if (joinRoomBtn) {
-
-    joinRoomBtn.addEventListener(
-        "click",
-        joinRoom
-    );
-
-}
+joinRoomBtn.addEventListener(
+    "click",
+    joinRoom
+);
 
 
-if (resetGameBtn) {
-
-    resetGameBtn.addEventListener(
-        "click",
-        resetGame
-    );
-
-}
+resetGameBtn.addEventListener(
+    "click",
+    resetGame
+);
