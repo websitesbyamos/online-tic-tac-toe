@@ -1,25 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Online Tic-Tac-Toe</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="style.css">
+    <title>Online Tic-Tac-Toe | WebsitesbyAmos</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 </head>
 
 <body>
 
     <main class="app">
 
-        <h1>Tic-Tac-Toe</h1>
+        <!-- HEADER -->
 
-        <p class="subtitle">
-            Play with a friend online 🎮
-        </p>
+        <header class="game-header">
 
-        <!-- Room Section -->
+            <h1>Tic-Tac-Toe</h1>
+
+            <p class="subtitle">
+                Online 2-player game
+            </p>
+
+        </header>
+
+
+        <!-- PLAYER NAME -->
+
+        <section class="name-section">
+
+            <input
+                type="text"
+                id="playerName"
+                placeholder="Enter your name"
+                maxlength="20"
+                autocomplete="off"
+            >
+
+        </section>
+
+
+        <!-- ROOM CONTROLS -->
+
         <section class="room-section">
 
             <input
@@ -27,23 +58,86 @@
                 id="roomCode"
                 placeholder="Enter room code"
                 maxlength="6"
+                autocomplete="off"
             >
 
-            <button id="createRoom">
+            <button
+                id="createRoom"
+                type="button"
+            >
                 Create Room
             </button>
 
-            <button id="joinRoom">
+            <button
+                id="joinRoom"
+                type="button"
+            >
                 Join Room
             </button>
 
         </section>
 
-        <!-- Game Information -->
+
+        <!-- SCOREBOARD -->
+
+        <section
+            class="scoreboard"
+            aria-label="Scoreboard"
+        >
+
+            <div class="player-score">
+
+                <span
+                    id="playerXName"
+                    class="player-name"
+                >
+                    Player X
+                </span>
+
+                <strong id="scoreX">
+                    0
+                </strong>
+
+                <small>
+                    X
+                </small>
+
+            </div>
+
+
+            <div class="vs">
+                VS
+            </div>
+
+
+            <div class="player-score">
+
+                <span
+                    id="playerOName"
+                    class="player-name"
+                >
+                    Player O
+                </span>
+
+                <strong id="scoreO">
+                    0
+                </strong>
+
+                <small>
+                    O
+                </small>
+
+            </div>
+
+        </section>
+
+
+        <!-- GAME INFORMATION -->
+
         <section class="game-info">
 
             <p id="status">
-                Create or join a room to start.
+                Enter your name and create or join a room.
             </p>
 
             <p id="players">
@@ -52,32 +146,134 @@
 
         </section>
 
-        <!-- Tic Tac Toe Board -->
-        <section class="board" id="board">
 
-            <button class="cell" data-index="0"></button>
-            <button class="cell" data-index="1"></button>
-            <button class="cell" data-index="2"></button>
+        <!-- TIC-TAC-TOE BOARD -->
 
-            <button class="cell" data-index="3"></button>
-            <button class="cell" data-index="4"></button>
-            <button class="cell" data-index="5"></button>
+        <section
+            class="board"
+            id="board"
+            aria-label="Tic-Tac-Toe board"
+        >
 
-            <button class="cell" data-index="6"></button>
-            <button class="cell" data-index="7"></button>
-            <button class="cell" data-index="8"></button>
+            <button
+                class="cell"
+                data-index="0"
+                aria-label="Cell 1"
+                type="button"
+            ></button>
+
+            <button
+                class="cell"
+                data-index="1"
+                aria-label="Cell 2"
+                type="button"
+            ></button>
+
+            <button
+                class="cell"
+                data-index="2"
+                aria-label="Cell 3"
+                type="button"
+            ></button>
+
+
+            <button
+                class="cell"
+                data-index="3"
+                aria-label="Cell 4"
+                type="button"
+            ></button>
+
+            <button
+                class="cell"
+                data-index="4"
+                aria-label="Cell 5"
+                type="button"
+            ></button>
+
+            <button
+                class="cell"
+                data-index="5"
+                aria-label="Cell 6"
+                type="button"
+            ></button>
+
+
+            <button
+                class="cell"
+                data-index="6"
+                aria-label="Cell 7"
+                type="button"
+            ></button>
+
+            <button
+                class="cell"
+                data-index="7"
+                aria-label="Cell 8"
+                type="button"
+            ></button>
+
+            <button
+                class="cell"
+                data-index="8"
+                aria-label="Cell 9"
+                type="button"
+            ></button>
 
         </section>
 
-        <!-- Reset -->
-        <button id="resetGame" class="reset">
-            Reset Game
+
+        <!-- NEXT ROUND -->
+
+        <button
+            id="resetGame"
+            class="reset"
+            type="button"
+        >
+            Next Round
         </button>
 
-</main>
+    </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+
+    <!-- FOOTER -->
+
+    <footer class="site-footer">
+
+        <h3>
+            WebsitesbyAmos
+        </h3>
+
+        <p>
+            Building Websites, Automating Goals.
+        </p>
+
+        <a
+            href="https://wa.me/2349011403407"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="whatsapp-link"
+        >
+            Chat on WhatsApp
+        </a>
+
+        <p class="copyright">
+            © 2026 WebsitesbyAmos. All rights reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- SUPABASE -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
+
+    <!-- GAME JAVASCRIPT -->
+
+    <script src="script.js"></script>
 
 </body>
-</html>
+
+                    </html>
