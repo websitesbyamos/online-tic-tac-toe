@@ -729,9 +729,6 @@ async function makeMove(index) {
                 score_o:
                     newScoreO,
 
-                session_winner:
-                    sessionWinner
-
             })
             .eq(
                 "room_code",
