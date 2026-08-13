@@ -211,9 +211,6 @@ async function createRoom() {
                 winner:
                     "",
 
-                session_winner:
-                    "",
-
                 player_x:
                     playerId,
 
