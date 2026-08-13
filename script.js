@@ -227,7 +227,10 @@ async function createRoom() {
                     0,
 
                 score_o:
-                    0
+    0,
+
+starting_player:
+    "X"
 
             })
             .select()
