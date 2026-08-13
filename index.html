@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Online Tic-Tac-Toe</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="app">
+
+        <h1>Tic-Tac-Toe</h1>
+
+        <p class="subtitle">
+            Play with a friend online 🎮
+        </p>
+
+        <!-- Room Section -->
+        <section class="room-section">
+
+            <input
+                type="text"
+                id="roomCode"
+                placeholder="Enter room code"
+                maxlength="6"
+            >
+
+            <button id="createRoom">
+                Create Room
+            </button>
+
+            <button id="joinRoom">
+                Join Room
+            </button>
+
+        </section>
+
+        <!-- Game Information -->
+        <section class="game-info">
+
+            <p id="status">
+                Create or join a room to start.
+            </p>
+
+            <p id="players">
+                Players: —
+            </p>
+
+        </section>
+
+        <!-- Tic Tac Toe Board -->
+        <section class="board" id="board">
+
+            <button class="cell" data-index="0"></button>
+            <button class="cell" data-index="1"></button>
+            <button class="cell" data-index="2"></button>
+
+            <button class="cell" data-index="3"></button>
+            <button class="cell" data-index="4"></button>
+            <button class="cell" data-index="5"></button>
+
+            <button class="cell" data-index="6"></button>
+            <button class="cell" data-index="7"></button>
+            <button class="cell" data-index="8"></button>
+
+        </section>
+
+        <!-- Reset -->
+        <button id="resetGame" class="reset">
+            Reset Game
+        </button>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    color: #111;
+}
+
+.app {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 38px;
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    color: #777;
+    margin-bottom: 25px;
+}
+
+/* ROOM */
+
+.room-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.room-section input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-size: 17px;
+    text-align: center;
+    text-transform: uppercase;
+    outline: none;
+}
+
+.room-section input:focus {
+    border-color: #111;
+}
+
+.room-section button {
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #111;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.room-section button:active {
+    transform: scale(0.98);
+}
+
+/* INFO */
+
+.game-info {
+    margin: 15px 0 20px;
+}
+
+#status {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+#players {
+    color: #777;
+}
+
+/* BOARD */
+
+.board {
+    width: min(90vw, 360px);
+    aspect-ratio: 1;
+    margin: 0 auto 20px;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.cell {
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 14px;
+
+    font-size: clamp(42px, 13vw, 70px);
+    font-weight: bold;
+
+    color: #111;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.1s,
+        background 0.2s;
+}
+
+.cell:hover {
+    background: #eee;
+}
+
+.cell:active {
+    transform: scale(0.95);
+}
+
+/* RESET */
+
+.reset {
+    width: 100%;
+    padding: 14px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: #ddd;
+    color: #111;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.reset:active {
+    transform: scale(0.98);
+}
+
+/* MOBILE */
+
+@media (max-width: 400px) {
+
+    h1 {
+        font-size: 32px;
+    }
+
+    .board {
+        gap: 6px;
+    }
+}
