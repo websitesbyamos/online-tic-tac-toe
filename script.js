@@ -344,7 +344,10 @@ async function joinRoom() {
     }
 
 
-    const { data: updatedGame, error: updateError } =
+    const {
+        data: updatedGame,
+        error: updateError
+    } =
         await supabaseClient
             .from("games")
             .update({
@@ -551,27 +554,11 @@ async function makeMove(index) {
     }
 
 
-    // SESSION ALREADY WON
-
-    if (
-        gameData.session_winner
-    ) {
+    if (gameData.winner) {
 
         return;
     }
 
-
-    // ROUND ALREADY FINISHED
-
-    if (
-        gameData.winner
-    ) {
-
-        return;
-    }
-
-
-    // WRONG TURN
 
     if (
         gameData.current_turn !==
@@ -654,10 +641,6 @@ async function makeMove(index) {
         );
 
 
-    // ======================================
-    // ADD ROUND POINT
-    // ======================================
-
     if (winner === "X") {
 
         newScoreX++;
@@ -672,40 +655,10 @@ async function makeMove(index) {
     }
 
 
-    // ======================================
-    // CHECK SESSION WINNER
-    // ======================================
-
-    let sessionWinner =
-        gameData.session_winner ||
-        "";
-
-
-    if (
-        newScoreX >= 5
-    ) {
-
-        sessionWinner =
-            "X";
-
-    }
-
-
-    if (
-        newScoreO >= 5
-    ) {
-
-        sessionWinner =
-            "O";
-
-    }
-
-
-    // ======================================
-    // UPDATE GAME
-    // ======================================
-
-    const { data, error } =
+    const {
+        data,
+        error
+    } =
         await supabaseClient
             .from("games")
             .update({
@@ -727,7 +680,7 @@ async function makeMove(index) {
                     newScoreX,
 
                 score_o:
-                    newScoreO,
+                    newScoreO
 
             })
             .eq(
@@ -880,68 +833,6 @@ function updateStatus() {
         return;
 
 
-    // ======================================
-    // SESSION WINNER
-    // ======================================
-
-    if (
-        gameData.session_winner ===
-        "X"
-    ) {
-
-        if (
-            myPlayer === "X"
-        ) {
-
-            setStatus(
-                "🏆 YOU WON THE SESSION! 🎉"
-            );
-
-        }
-
-        else {
-
-            setStatus(
-                "🏆 Player X won the session!"
-            );
-
-        }
-
-        return;
-    }
-
-
-    if (
-        gameData.session_winner ===
-        "O"
-    ) {
-
-        if (
-            myPlayer === "O"
-        ) {
-
-            setStatus(
-                "🏆 YOU WON THE SESSION! 🎉"
-            );
-
-        }
-
-        else {
-
-            setStatus(
-                "🏆 Player O won the session!"
-            );
-
-        }
-
-        return;
-    }
-
-
-    // ======================================
-    // ROUND WINNER
-    // ======================================
-
     if (
         gameData.winner ===
         "X"
@@ -995,10 +886,6 @@ function updateStatus() {
         return;
     }
 
-
-    // ======================================
-    // DRAW
-    // ======================================
 
     if (
         gameData.winner ===
@@ -1013,10 +900,6 @@ function updateStatus() {
     }
 
 
-    // ======================================
-    // WAITING
-    // ======================================
-
     if (
         !gameData.player_o
     ) {
@@ -1028,10 +911,6 @@ function updateStatus() {
         return;
     }
 
-
-    // ======================================
-    // TURN
-    // ======================================
 
     if (
         gameData.current_turn ===
@@ -1055,7 +934,7 @@ function updateStatus() {
 
 
 // ==========================================
-// NEXT ROUND / NEW SESSION
+// NEXT ROUND
 // ==========================================
 
 async function resetGame() {
@@ -1088,83 +967,6 @@ async function resetGame() {
         ]);
 
 
-    // ======================================
-    // IF SESSION IS FINISHED
-    // START COMPLETELY NEW SESSION
-    // ======================================
-
-    if (
-        gameData.session_winner
-    ) {
-
-        const { data, error } =
-            await supabaseClient
-                .from("games")
-                .update({
-
-                    board:
-                        emptyBoard,
-
-                    current_turn:
-                        "X",
-
-                    starting_player:
-                        "X",
-
-                    winner:
-                        "",
-
-                    session_winner:
-                        "",
-
-                    score_x:
-                        0,
-
-                    score_o:
-                        0
-
-                })
-                .eq(
-                    "room_code",
-                    currentRoom
-                )
-                .select()
-                .single();
-
-
-        if (error) {
-
-            console.error(
-                error
-            );
-
-            setStatus(
-                "Could not start new session."
-            );
-
-            return;
-        }
-
-
-        gameData =
-            data;
-
-
-        renderBoard();
-
-        updateScore();
-
-        updateStatus();
-
-        return;
-    }
-
-
-    // ======================================
-    // NORMAL NEXT ROUND
-    // ROTATE STARTING PLAYER
-    // ======================================
-
     const currentStartingPlayer =
         gameData.starting_player === "O"
             ? "O"
@@ -1177,7 +979,10 @@ async function resetGame() {
             : "X";
 
 
-    const { data, error } =
+    const {
+        data,
+        error
+    } =
         await supabaseClient
             .from("games")
             .update({
